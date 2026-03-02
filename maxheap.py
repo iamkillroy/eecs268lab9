@@ -250,6 +250,8 @@ class Heap(BinaryTree):
                 # return
                 # we set the new dad here for easier future traversal
                 newBinaryNode._dad = compareNode
+                # we go right leaning here
+                # and then we check to the left.
                 if compareNode.has_branch("left"): compareNode.set_branch("right", newBinaryNode)
                 elif compareNode.has_branch("right"): compareNode.set_branch("left", newBinaryNode)
                 else: raise RuntimeError("Something absolutely terrible has happened.") #just in case :)
@@ -290,6 +292,19 @@ class Heap(BinaryTree):
                     # is bigger but left is not
                     return self.maxHeapAdd(newBinaryNode, compareNode.get_branch("left"))
                 elif max(compareNodeLeft, compareNodeRight) < newBinaryNode.get_entry():
-                    #okay so we have to now link the right node with this 
+                    #okay so we have to now link the right node with this
                     # new nodes' value.
-                    pass
+                    compareNodeRight._dad = newBinaryNode
+                    newBinaryNode._dad = compareNode
+                    return newBinaryNode
+        elif compareNode.get_entry() < newBinaryNode.get_entry():
+            # okay all that aside now
+            # holy yap
+            # this is when the newBinaryNode's entry is
+            # greater than the current compare so it just means
+            # we try and go one up (if we can)
+            # hopefully!!! we caught the
+            # self._adam.get_entry() < newBinaryNode.get_entry()
+            # so we don't gotta worry about hittin' that roof
+            # woof woof woof
+            return self.maxHeapAdd(newBinaryNode, compareNode._dad)
