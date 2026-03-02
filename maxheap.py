@@ -229,13 +229,67 @@ class Heap(BinaryTree):
         if self._adam is None: #there's nothing here!
             self._adam = newBinaryNode #let's set the start to
             #our first entry
-        traversalNode = self._adam #now we wanna go to the right most branch
+        traversalNode: BinaryNode = self._adam #now we wanna go to the right most branch
         #there's no particular order for left/right except that the parent
         # must be bigger than the child
         while traversalNode.has_branch("right"):
             traversalNode = traversalNode.get_branch("right")
-        self.maxHeapAdd(newBinaryNode, startingNode)
-    def maxHeapAdd(self, newBinaryNode: BinaryNode, startingNode: BinaryNode):
+        self.maxHeapAdd(newBinaryNode, traversalNode)
+    def maxHeapAdd(self, newBinaryNode: BinaryNode, compareNode: BinaryNode):
         """Recursively adds a new binary node into the binary tree
         """
-        pass
+        if compareNode.get_entry() > newBinaryNode:
+            #so we're at some point where the new BinaryNode
+            #is less than the parent. so let's do two things
+            #first let's make sure that the parent node doesn't
+            # have kids that are greater than the new BinaryNode
+            # entry and if not then we can add the binaryNode
+            if compareNode.branch_count() < 2:
+                #okay this means that there's at least some?
+                # space for this element so we insert it and
+                # return
+                # we set the new dad here for easier future traversal
+                newBinaryNode._dad = compareNode
+                if compareNode.has_branch("left"): compareNode.set_branch("right", newBinaryNode)
+                elif compareNode.has_branch("right"): compareNode.set_branch("left", newBinaryNode)
+                else: raise RuntimeError("Something absolutely terrible has happened.") #just in case :)
+                return newBinaryNode
+            elif compareNode.branch_count() == 2: #just making this airtight
+                #this means the next two child branches exist so there's not
+                # an easy "this is where you go" situation
+                # therefore we need to do one of two things
+                # (1): recurse and hopefully encounter a situation
+                # where one of these child nodes are greater than
+                # the newBinaryNode and then append the newBinaryNode
+                # to that or
+                # (2): we're in a situation where we're trying to add but
+                # it looks like this
+                # newBinaryNode : 26            (27)
+                # compareNode : 27             /    \
+                #                           (21)     (15)
+                # where would compareNode go here?
+                # the answer i will use is probably on the right branch and link 15 with 27
+                # so it would become this
+                #                               (27)
+                #                              /    \
+                #                           (21)    (26)
+                #                                       \
+                #                                        (15)
+                # which makes sense to me because it still preserves the structure
+                # but please feel free to comment
+                compareNodeLeft: BinaryNode = compareNode.get_branch("left").get_entry()
+                compareNodeRight: BinaryNode = compareNode.get_branch("right").get_entry()
+
+                #SCENARIO 1: one of the child branches are greater than the compareNode
+                if compareNodeRight > newBinaryNode:
+                    #we start with right because we generally try to add
+                    # right as much as we can, it's "right leaning"
+                    return self.maxHeapAdd(newBinaryNode, compareNode.get_branch("right"))
+                if compareNodeLeft > newBinaryNode:
+                    #same deal with left if that's the way. this means right
+                    # is bigger but left is not
+                    return self.maxHeapAdd(newBinaryNode, compareNode.get_branch("left"))
+                elif max(compareNodeLeft, compareNodeRight) < newBinaryNode.get_entry():
+                    #okay so we have to now link the right node with this 
+                    # new nodes' value.
+                    pass
