@@ -353,7 +353,11 @@ class Heap(BinaryTree):
             # self._adam.get_entry() < newBinaryNode.get_entry()
             # so we don't gotta worry about hittin' that roof
             # woof woof woof
-            return self.maxHeapAdd(newBinaryNode, compareNode._dad)
+            if not compareNode._dad == None:
+                return self.maxHeapAdd(newBinaryNode, compareNode._dad)
+            else: #maybe the adam?
+                compareNode._dad = newBinaryNode
+                return newBinaryNode
     def delete(self, value, contNode=None):
         if contNode == None:
             contNode = self._adam
@@ -369,6 +373,7 @@ class Heap(BinaryTree):
         else: contNode._dad = None
     def search(self, nodeValue: int, startNode: BinaryNode | None = None) -> BinaryNode | None:
         """Searches through and delete value n with maxheap perserverance rules"""
+        print("starting search")
         if startNode is None: #override default kwarg with
             startNode = self._adam #the start (no one will
             # access the kwarg recursively except us
@@ -392,8 +397,10 @@ class Heap(BinaryTree):
         # is way too large as it is
         if nodeValue == startNode.get_entry():
             # we found it!! yuppers
+            print("found value equal to nodevalue")
             return startNode.get_entry()
         elif nodeValue > startNode.get_entry():
+            print("start node is less")
             #okay this branch is not the droid/node
             # we're looking for. return 0 because then
             # when we do a node comparison we're gonna
@@ -422,6 +429,7 @@ class Heap(BinaryTree):
                 # at 1 it's zero
                 return BinaryNode(entry=0)
         elif nodeValue < startNode.get_entry():
+            print("startNode is greater")
             #recurse through both the left and right node
             # make two empty zeroes so we can compare
             # against real live binary nodes caught
