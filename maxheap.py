@@ -1,4 +1,5 @@
 from _typeshed import TraceFunction
+from sqlite3 import Binary
 
 
 class BinaryNode:
@@ -101,7 +102,7 @@ class BinaryTree:
            # on the branch tree and preserve order
            daddyNode.set_branch(sideOfKiddieNode, successorNode) #replace the kiddie node
            return None
-    def search(self, nodeValue: int, startNode = None):
+    def search(self, nodeValue: int, startNode: BinaryNode | None = None):
         """Searches through a binary tree and returns the element"""
         return self.__recursive_search(nodeValue, startNode).get_entry()
     def __recursive_search(self, nodeValue: int, startNode=None, found=False, returnBNode=False) -> BinaryNode:
@@ -308,3 +309,88 @@ class Heap(BinaryTree):
             # so we don't gotta worry about hittin' that roof
             # woof woof woof
             return self.maxHeapAdd(newBinaryNode, compareNode._dad)
+    def delete(self, value, contNode=None):
+        if contNode == None:
+            contNode = self._adam
+        """Deletes a value if it exists in the binary tree"""
+        if contNode.get_entry() != value:
+            if contNode.has_branch("right"): self.delete(value, contNode=contNode.get_branch("right"))
+            if contNode.has_branch("left"): self.delete(value, contNode=contNode.get_branch("left"))
+        if contNode.get_entry() == value:
+            #get the dad and link it with the branch
+            if contNode.has_branch("right"): contNode._dad = contNode.get_branch("right")
+            elif contNode.has_branch("left"): contNode._dad = contNode.get_branch("left")
+            #there's no branches connected to this node, so just set the dad equal to nothing
+        else: contNode._dad = None
+    def search(self, nodeValue: int, startNode: BinaryNode | None = None) -> BinaryNode | None:
+        """Searches through and delete value n with maxheap perserverance rules"""
+        if startNode is None: #override default kwarg with
+            startNode = self._adam #the start (no one will
+            # access the kwarg recursively except us
+            # so it'll be okayyyyyyyyyy right?)
+        #search algo is simple AF (awesome fun!!!)
+        # first we need to see if the nodeValue is
+        # actually equal to the startNode. if not,
+        # then we need to check if it's bigger or smaller. if
+        # it's smaller, then we recursively search both the left
+        # and the right branch. PRESUMABLY we will only get
+        # one response matching the value because this is still
+        # a binary tree and in relation there should only
+        # be one element. then, we return the value. we can
+        # recurse through every branch this way and see the
+        # response that we get from the branch
+        # otherwise it's too big and then we throw a 0
+        # because there's no elements here
+        # now i know what you're saying.
+        # why do we throw 0 instead of none?
+        # i'll explain in the actual code because this block
+        # is way too large as it is
+        if nodeValue == startNode.get_entry():
+            # we found it!! yuppers
+            return startNode.get_entry()
+        elif nodeValue > startNode.get_entry():
+            #okay this branch is not the droid/node
+            # we're looking for. return 0 because then
+            # when we do a node comparison we're gonna
+            # compare using the node's (built in! )
+            # integer value, and then we can max()
+            # the response and get the actual location
+            # based on the two presumptions that
+            # 1. the node's entry is integer comparable
+            # 2. there is only one unique "id" of the node
+
+            #this code sucks i know
+            # sorry sorry sorry sorry
+            # sorry sorry sorry
+            # we're just trying to return
+            # correct addressing if we're
+            # at the top of recursing
+            # (self._adam)
+            if not startNode == self._adam:
+                return None
+            else:
+                return 0
+        elif nodeValue < startNode.get_entry():
+            #recurse through both the left and right node
+            rightResponse = 0
+            leftResponse = 0
+            if startNode.has_branch("right"):
+                rightResponse = self.search(nodeValue, startNode.get_branch("right"))
+            if startNode.has_branch("left"):
+                leftResponse = self.search(nodeValue, startNode.get_branch("left"))
+            #okay now we do that fancy max comparison
+            #so now it's either a value! or it's nothing and we
+            # return 0
+            binarySearchResult = max(leftResponse.get_entry(), rightResponse.get_entry())
+            if not binarySearchResult == 0:
+                #return one or the other value for the correct right response
+                #i guess chat
+                return leftResponse if leftResponse.get_entry() != 0 else rightResponse
+            else:
+                if not startNode == self._adam:
+                    #cute girl in prog ii please forgive me
+                    # this is just so we can return the correct
+                    # type addressing
+                    return None
+                else:
+                    return 0
