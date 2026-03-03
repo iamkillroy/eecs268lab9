@@ -1,5 +1,3 @@
-from _typeshed import TraceFunction
-from sqlite3 import Binary
 
 
 class BinaryNode:
@@ -45,7 +43,47 @@ class BinaryNode:
             self._right = node
         else:
             raise Exception(f"Branch direction \"{branchDirection}\" doesn't exist")
+    #dear leadies and gents
+    # i present to you
+    # ugly f$^%ing $&#
+    # comparison between binary node
+    # entry thingamajig
+    # so this way we can directly compare
+    # binary node, entries, integers,
+    # whatever! enjoy the slop (human made)
+    # yours truly --- lucas scott frias
+    def __eq__(self, other):
+            if isinstance(other, BinaryNode):
+                    return self._entry == other._entry
+            if isinstance(other, int):
+                    return self._entry == other
+            return NotImplemented
+    def __lt__(self, other):
+                if isinstance(other, BinaryNode):
+                    return self._entry < other._entry
+                if isinstance(other, int):
+                    return self._entry < other
+                return NotImplemented
 
+    def __gt__(self, other):
+                if isinstance(other, BinaryNode):
+                    return self._entry > other._entry
+                if isinstance(other, int):
+                    return self._entry > other
+                return NotImplemented
+    def __le__(self, other):
+                    if isinstance(other, BinaryNode):
+                        return self._entry < other._entry
+                    if isinstance(other, int):
+                        return self._entry < other
+                    return NotImplemented
+
+    def __ge__(self, other):
+                    if isinstance(other, BinaryNode):
+                        return self._entry > other._entry
+                    if isinstance(other, int):
+                        return self._entry >= other
+                    return NotImplemented
 class BinaryTree:
     def __init__(self):
         """Makes a binary tree"""
@@ -366,14 +404,23 @@ class Heap(BinaryTree):
             # correct addressing if we're
             # at the top of recursing
             # (self._adam)
-            if not startNode == self._adam:
+            if startNode == self._adam:
                 return None
             else:
-                return 0
+                #it can't just be a zero duh!
+                # it has to had an entry that
+                # is comparable and always less
+                # since patient indexing starts
+                # at 1 it's zero
+                return BinaryNode(entry=0)
         elif nodeValue < startNode.get_entry():
             #recurse through both the left and right node
-            rightResponse = 0
-            leftResponse = 0
+            # make two empty zeroes so we can compare
+            # against real live binary nodes caught
+            # in the wild crickey. what i would love
+            # to be australian
+            rightResponse = BinaryNode(entry=0)
+            leftResponse = BinaryNode(entry=0)
             if startNode.has_branch("right"):
                 rightResponse = self.search(nodeValue, startNode.get_branch("right"))
             if startNode.has_branch("left"):
@@ -387,10 +434,10 @@ class Heap(BinaryTree):
                 #i guess chat
                 return leftResponse if leftResponse.get_entry() != 0 else rightResponse
             else:
-                if not startNode == self._adam:
+                if startNode == self._adam:
                     #cute girl in prog ii please forgive me
                     # this is just so we can return the correct
                     # type addressing
                     return None
                 else:
-                    return 0
+                    return BinaryNode(entry=0)
