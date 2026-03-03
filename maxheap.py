@@ -267,16 +267,23 @@ class Heap(BinaryTree):
         newBinaryNode: BinaryNode = BinaryNode(entry=entry)
         if self._adam is None: #there's nothing here!
             self._adam = newBinaryNode #let's set the start to
+            print("added first element")
+            return None
             #our first entry
         traversalNode: BinaryNode = self._adam #now we wanna go to the right most branch
         #there's no particular order for left/right except that the parent
         # must be bigger than the child
+        print(traversalNode.get_entry().firstName)
         while traversalNode.has_branch("right"):
             traversalNode = traversalNode.get_branch("right")
+        print(f"trying to add {entry.firstName} with a binarynode")
+        print(traversalNode)
         self.maxHeapAdd(newBinaryNode, traversalNode)
     def maxHeapAdd(self, newBinaryNode: BinaryNode, compareNode: BinaryNode):
         """Recursively adds a new binary node into the binary tree
         """
+        print("i got pushed the traversal Node")
+        print(compareNode)
         if compareNode.get_entry() > newBinaryNode:
             #so we're at some point where the new BinaryNode
             #is less than the parent. so let's do two things
@@ -404,7 +411,8 @@ class Heap(BinaryTree):
             # correct addressing if we're
             # at the top of recursing
             # (self._adam)
-            if startNode == self._adam:
+            if startNode is self._adam:
+                print("i'm gonna blow!!")
                 return None
             else:
                 #it can't just be a zero duh!
@@ -434,10 +442,11 @@ class Heap(BinaryTree):
                 #i guess chat
                 return leftResponse if leftResponse.get_entry() != 0 else rightResponse
             else:
-                if startNode == self._adam:
+                if startNode is self._adam:
                     #cute girl in prog ii please forgive me
                     # this is just so we can return the correct
                     # type addressing
                     return None
                 else:
+                    print("me tooo!!!")
                     return BinaryNode(entry=0)
